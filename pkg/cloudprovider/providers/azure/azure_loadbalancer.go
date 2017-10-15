@@ -1331,6 +1331,14 @@ func (az *Cloud) ensureHostInPool(serviceName string, nodeName types.NodeName, b
 	return nil
 }
 
+func (az *Cloud) getPublicIPAddressResourceGroup(service *v1.Service) string {
+	if resourceGroup, ok := service.Annotations[ServiceAnnotationLoadBalancerPublicIPAddressResourceGroup]; ok {
+		return resourceGroup
+	}
+
+	return az.ResourceGroup
+}
+
 // Check if service requires an internal load balancer.
 func requiresInternalLoadBalancer(service *v1.Service) bool {
 	if l, ok := service.Annotations[ServiceAnnotationLoadBalancerInternal]; ok {

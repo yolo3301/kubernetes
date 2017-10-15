@@ -519,3 +519,19 @@ func ExtractDiskData(diskData interface{}) (provisioningState string, diskState 
 	}
 	return provisioningState, diskState, nil
 }
+
+// parseResourceGroupNameFromID parses the resource group name from a resource ID
+func parseResourceGroupNameFromID(resourceID string) (resourceGroupName string, err error) {
+	reg := regexp.MustCompile(`(?i)(.*?)/resourceGroups/(?P<rgname>\S+)/providers/(.*?)`)
+
+	matchNames := reg.SubexpNames()
+	matches := reg.FindStringSubmatch(resourceID)
+
+	for i := range matchNames {
+		if matchNames[i] == "rgname" {
+			return matches[i], nil
+		}
+	}
+
+	return "", fmt.Errorf("Invalid resource ID: %s", resourceID)
+}
